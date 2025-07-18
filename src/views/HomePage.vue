@@ -19,18 +19,40 @@
       <ion-button @click="createContact()" fill="clear" aria-label="Add"> 
         <ion-icon name="add-outline" aria-hidden="true"></ion-icon> Erstelle Kontakt </ion-button>
         <ion-list>
-          <ion-item v-for="contact in contacts" :key="contact.givenName" @click="displayContactById(contact.id)">
+          <ion-item v-for="contact in contacts" :key="contact.givenName" @click="openDetail(contact)">
             <ion-label>
               {{ contact.givenName }} {{ contact.familyName }}<br />
-              <span v-if="contact.phoneNumbers?.length">
-                <ion-icon name="call-outline"></ion-icon>{{ contact.phoneNumbers[0].value }}</span><br />
-              <span v-if="contact.emailAddresses?.length">
-                <ion-icon name="at-outline"></ion-icon> {{ contact.emailAddresses[0].value }}</span><br />
-              <span v-if="contact.birthday">
-                <ion-icon name="balloon-outline"></ion-icon>{{ contact.birthday.day }}.{{contact.birthday.month }}.{{ contact.birthday.year }}</span><br />
             </ion-label>
           </ion-item>
         </ion-list>
+        <ion-modal :is-open="showDetail" @didDismiss="closeDetail()">
+  <ion-content>
+    <ion-toolbar>
+      <ion-title>Kontakt Details</ion-title>
+      <ion-buttons slot="end">
+        <ion-button @click="closeDetail()">Schließen</ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <div v-if="selectedContact">
+      <p>{{ selectedContact.givenName }} {{ selectedContact.familyName }}</p>
+      <p v-if="selectedContact.phoneNumbers?.length">
+        <ion-icon name="call-outline"></ion-icon>
+        {{ selectedContact.phoneNumbers[0].value }}
+      </p>
+      <p v-if="selectedContact.emailAddresses?.length">
+        <ion-icon name="at-outline"></ion-icon>
+        {{ selectedContact.emailAddresses[0].value }}
+      </p>
+      <p v-if="selectedContact.birthday">
+        <ion-icon name="balloon-outline"></ion-icon>
+        {{ selectedContact.birthday.day }}.{{ selectedContact.birthday.month }}.{{ selectedContact.birthday.year }}
+      </p>
+    </div>
+        <ion-button @click="confirmAndDeleteContact()">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+  </ion-content>
+</ion-modal>
     </ion-content>
   </ion-page>
 </template>
@@ -38,17 +60,19 @@
 <script setup lang="ts">
 import { Capacitor } from '@capacitor/core';
 import { IonList, IonItem, IonLabel, IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/vue';
-import { Contacts, EmailAddressType, PhoneNumberType, PostalAddressType } from '@capawesome-team/capacitor-contacts';
+import { Contacts } from '@capawesome-team/capacitor-contacts';
 import { ref, onMounted } from 'vue';
 import { addIcons } from 'ionicons';
-import { addOutline, atOutline, balloonOutline, callOutline, reloadOutline } from 'ionicons/icons';
-  
+import { addOutline, atOutline, balloonOutline, callOutline, reloadOutline, trashOutline } from 'ionicons/icons';
+import { IonModal, IonButtons } from '@ionic/vue';  
+
 addIcons({
   'add-outline': addOutline,
   'reload-outline': reloadOutline,
-  'callOutline': callOutline,
-  'atOutline': atOutline, 
-  'balloonOutline': balloonOutline,
+  'call-outline': callOutline,
+  'at-outline': atOutline, 
+  'balloon-outline': balloonOutline,
+  'trash-outline': trashOutline
 });
 
 onMounted(() => {
@@ -57,6 +81,8 @@ onMounted(() => {
 });
 
 const contacts = ref<any[]>([]);
+const showDetail = ref(false);
+const selectedContact = ref<any | null>(null);
 
 const getContacts = async () => {
   const { contacts: result } = await Contacts.getContacts({
@@ -72,42 +98,44 @@ const getContacts = async () => {
 };
 
 const totalContacts = ref<number | null>(null);
-
-
-
 const countContacts = async () => {
   const { total } = await Contacts.countContacts();
   totalContacts.value = total;
   console.log('Total contacts:', totalContacts.value);
 };
 
-const displayContactById = async (id: string) => {
-  await Contacts.displayContactById({ id });
+const openDetail = (contact: any) => {
+  selectedContact.value = contact;
+  showDetail.value = true;
 };
 
-const getContactById = async (contactId: string) => {
-  const { contact } = await Contacts.getContactById({ id: contactId });
-  return contact;
+const closeDetail = () => {
+  showDetail.value = false;
+  selectedContact.value = null;
+};  
+
+const confirmAndDeleteContact = async () => {
+  if (!selectedContact.value?.id) return;
+  const confirmed = window.confirm('Möchtest du diesen Kontakt wirklich löschen?');
+  if (confirmed) {
+    await deleteContactById(selectedContact.value.id);
+    closeDetail();
+  }
 };
 
-
+const deleteContactById = async (contactId: string) => {
+  await Contacts.deleteContactById({ id: contactId });
+  await getContacts();
+  await countContacts();
+}
 
 const createContact = async () => {}
 
-
-
-
-const checkPermissions = async () => {
-  return Contacts.checkPermissions();
-};
-
 const requestPermissions = async () => {
-  // return Contacts.requestPermissions();
   const status = await Contacts.requestPermissions();
   if (status.granted) {
     await getContacts();
     await countContacts();
-    // await getAccounts();
   } else {
     console.warn('Keine Berechtigung für Kontakte');
   }
