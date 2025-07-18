@@ -13,16 +13,19 @@
             <p v-if ="totalContacts !== null"> Kontakte : {{ totalContacts }}</p>          
         </ion-toolbar>
       </ion-header>
-      <ion-button @click="getContacts()" fill="outline">🔄️ Kontakte laden</ion-button> 
+      <ion-button @click="getContacts()" fill="outline" aria-label="Reload">
+        <ion-icon name="reload-outline" aria-hidden="true"></ion-icon>Kontakte laden</ion-button> 
       <!-- page 145 -->
-      <ion-button @click="createContact()" fill="clear"> ➕ Erstelle Kontakt </ion-button>
-
+      <ion-button @click="createContact()" fill="clear" aria-label="Add"> 
+        <ion-icon name="add-outline" aria-hidden="true"></ion-icon> Erstelle Kontakt </ion-button>
         <ion-list>
           <ion-item v-for="contact in contacts" :key="contact.givenName" @click="displayContactById(contact.id)">
             <ion-label>
               {{ contact.givenName }} {{ contact.familyName }}<br />
-              <span v-if="contact.phoneNumbers?.length">📞 {{ contact.phoneNumbers[0].value }}</span><br />
-              <span v-if="contact.emailAddresses?.length">✉️ {{ contact.emailAddresses[0].value }}</span>
+              <span v-if="contact.phoneNumbers?.length">
+                <ion-icon name="call-outline"></ion-icon>{{ contact.phoneNumbers[0].value }}</span><br />
+              <span v-if="contact.emailAddresses?.length">
+                <ion-icon name="at-outline"></ion-icon> {{ contact.emailAddresses[0].value }}</span>
             </ion-label>
           </ion-item>
         </ion-list>
@@ -32,23 +35,25 @@
 
 <script setup lang="ts">
 import { Capacitor } from '@capacitor/core';
-import { IonList, IonItem, IonLabel, IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
+import { IonList, IonItem, IonLabel, IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/vue';
 import { Contacts, EmailAddressType, PhoneNumberType, PostalAddressType } from '@capawesome-team/capacitor-contacts';
 import { ref, onMounted } from 'vue';
-    
+import { addIcons } from 'ionicons';
+import { addOutline, atOutline, callOutline, reloadOutline } from 'ionicons/icons';
+  
+addIcons({
+  'add-outline': addOutline,
+  'reload-outline': reloadOutline,
+  'callOutline': callOutline,
+  'atOutline': atOutline, 
+});
+
 onMounted(() => {
   requestPermissions();
   getContacts();
 });
 
 const contacts = ref<any[]>([]);
-// const accounts = ref<any[]>([]);
-
-// const getAccounts = async () => {
-//   const { accounts: result } = await Contacts.getAccounts();
-//   accounts.value = result;
-
-// };
 
 const getContacts = async () => {
   const { contacts: result } = await Contacts.getContacts({
