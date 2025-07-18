@@ -13,11 +13,12 @@
             <p v-if ="totalContacts !== null"> Kontakte : {{ totalContacts }}</p>          
         </ion-toolbar>
       </ion-header>
-      <ion-button @click="getContacts">Kontakte laden</ion-button>
-      <ion-button @click="createContact"> ➕ </ion-button>
+      <ion-button @click="getContacts()" fill="outline">🔄️ Kontakte laden</ion-button> 
+      <!-- page 145 -->
+      <ion-button @click="createContact()" fill="clear"> ➕ Erstelle Kontakt </ion-button>
 
         <ion-list>
-          <ion-item v-for="contact in contacts" :key="contact.id" @click="displayContactById(contact.id)">
+          <ion-item v-for="contact in contacts" :key="contact.givenName" @click="displayContactById(contact.id)">
             <ion-label>
               {{ contact.givenName }} {{ contact.familyName }}<br />
               <span v-if="contact.phoneNumbers?.length">📞 {{ contact.phoneNumbers[0].value }}</span><br />
@@ -34,9 +35,10 @@ import { Capacitor } from '@capacitor/core';
 import { IonList, IonItem, IonLabel, IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
 import { Contacts, EmailAddressType, PhoneNumberType, PostalAddressType } from '@capawesome-team/capacitor-contacts';
 import { ref, onMounted } from 'vue';
-
+    
 onMounted(() => {
   requestPermissions();
+  getContacts();
 });
 
 const contacts = ref<any[]>([]);
@@ -53,7 +55,11 @@ const getContacts = async () => {
     limit: 10, 
     offset: 0, 
   });
-  contacts.value = result;
+  contacts.value = result.sort((a, b) => {
+    if (!a.givenName) return 1;
+    if (!b.givenName) return -1;
+    return a.givenName.localeCompare(b.givenName);
+  });
   console.log(contacts);
 };
 
