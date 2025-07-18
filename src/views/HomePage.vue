@@ -30,27 +30,31 @@
 </template>
 
 <script setup lang="ts">
-import { alertController, IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
+import { Capacitor } from '@capacitor/core';
+import { IonList, IonItem, IonLabel, IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
 import { Contacts, EmailAddressType, PhoneNumberType, PostalAddressType } from '@capawesome-team/capacitor-contacts';
 import { ref, onMounted } from 'vue';
+
+onMounted(() => {
+  requestPermissions();
+});
+
 const contacts = ref<any[]>([]);
-const accounts = ref<any[]>([]);
+// const accounts = ref<any[]>([]);
 
-const getAccounts = async () => {
-  const { accounts: result } = await Contacts.getAccounts();
-  accounts.value = result;
+// const getAccounts = async () => {
+//   const { accounts: result } = await Contacts.getAccounts();
+//   accounts.value = result;
 
-};
+// };
 
 const getContacts = async () => {
-  try {
-    const { contacts: result } = await Contacts.getContacts({
-    fields: ['givenName', 'familyName', 'emailAddresses', 'phoneNumbers', 'postalAddresses'],
+  const { contacts: result } = await Contacts.getContacts({
+    limit: 10, 
+    offset: 0, 
   });
   contacts.value = result;
-  } catch (error) {
-    showErrorAlert.value = true;
-  }
+  console.log(contacts);
 };
 
 const totalContacts = ref<number | null>(null);
@@ -72,12 +76,7 @@ const getContactById = async (contactId: string) => {
   return contact;
 };
 
-onMounted(() => {
-  // countContacts();
-  // getContacts();
-  // getAccounts();
-  requestPermissions();
-});
+
 
 const createContact = async () => {}
 
@@ -92,9 +91,9 @@ const requestPermissions = async () => {
   // return Contacts.requestPermissions();
   const status = await Contacts.requestPermissions();
   if (status.granted) {
-    getContacts();
-    countContacts();
-    getAccounts();
+    await getContacts();
+    await countContacts();
+    // await getAccounts();
   } else {
     console.warn('Keine Berechtigung für Kontakte');
   }
