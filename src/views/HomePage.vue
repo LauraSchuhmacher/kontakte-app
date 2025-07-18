@@ -25,7 +25,9 @@
               <span v-if="contact.phoneNumbers?.length">
                 <ion-icon name="call-outline"></ion-icon>{{ contact.phoneNumbers[0].value }}</span><br />
               <span v-if="contact.emailAddresses?.length">
-                <ion-icon name="at-outline"></ion-icon> {{ contact.emailAddresses[0].value }}</span>
+                <ion-icon name="at-outline"></ion-icon> {{ contact.emailAddresses[0].value }}</span><br />
+              <span v-if="contact.birthday">
+                <ion-icon name="balloon-outline"></ion-icon>{{ contact.birthday.day }}.{{contact.birthday.month }}.{{ contact.birthday.year }}</span><br />
             </ion-label>
           </ion-item>
         </ion-list>
@@ -39,13 +41,14 @@ import { IonList, IonItem, IonLabel, IonButton, IonContent, IonHeader, IonPage, 
 import { Contacts, EmailAddressType, PhoneNumberType, PostalAddressType } from '@capawesome-team/capacitor-contacts';
 import { ref, onMounted } from 'vue';
 import { addIcons } from 'ionicons';
-import { addOutline, atOutline, callOutline, reloadOutline } from 'ionicons/icons';
+import { addOutline, atOutline, balloonOutline, callOutline, reloadOutline } from 'ionicons/icons';
   
 addIcons({
   'add-outline': addOutline,
   'reload-outline': reloadOutline,
   'callOutline': callOutline,
   'atOutline': atOutline, 
+  'balloonOutline': balloonOutline,
 });
 
 onMounted(() => {
