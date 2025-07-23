@@ -25,14 +25,21 @@
             </ion-label>
           </ion-item>
         </ion-list>
-        <ion-modal :is-open="showDetail" @didDismiss="closeDetail()">
-  <ion-content>
+
+      <ion-modal :is-open="showDetail" @didDismiss="closeDetail()">
+  <ion-header>
     <ion-toolbar>
-      <ion-title>Kontakt Details</ion-title>
-      <ion-buttons slot="end">
-        <ion-button @click="closeDetail()">Schließen</ion-button>
-      </ion-buttons>
+      <ion-buttons slot="start">
+        <ion-button @click="closeDetail()" fill="clear" aria-label="Back">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </ion-button>
+      <span style="vertical-align: middle; font-size: 1.1em; font-weight: 500; margin-left: 8px;">
+        Kontakt Details
+      </span>
+      </ion-buttons> 
     </ion-toolbar>
+    </ion-header>
+    <ion-content>
     <div v-if="selectedContact">
       <p>{{ selectedContact.givenName }} {{ selectedContact.familyName }}</p>
       <p v-if="selectedContact.phoneNumbers?.length">
@@ -56,7 +63,7 @@
         <ion-button @click="updateContact()">
           <ion-icon name="create-outline"></ion-icon>
         </ion-button>
-  </ion-content>
+         </ion-content>
 </ion-modal>
     </ion-content>
   </ion-page>
@@ -64,12 +71,12 @@
 
 <script setup lang="ts">
 import { Capacitor } from '@capacitor/core';
-import { IonList, IonItem, IonLabel, IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/vue';
+import { IonModal, IonButtons, IonList, IonItem, IonLabel, IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/vue';
 import { Contacts } from '@capawesome-team/capacitor-contacts';
 import { ref, onMounted } from 'vue';
 import { addIcons } from 'ionicons';
-import { addOutline, atOutline, balloonOutline, callOutline, createOutline, reloadOutline, trashOutline } from 'ionicons/icons';
-import { IonModal, IonButtons } from '@ionic/vue';  
+import { arrowBackOutline, addOutline, atOutline, balloonOutline, callOutline, createOutline, reloadOutline, trashOutline } from 'ionicons/icons';
+ 
 
 addIcons({
   'add-outline': addOutline,
@@ -79,6 +86,7 @@ addIcons({
   'balloon-outline': balloonOutline,
   'trash-outline': trashOutline,
   'create-outline': createOutline,
+  'arrow-back-outline': arrowBackOutline,
 });
 
 onMounted(() => {
