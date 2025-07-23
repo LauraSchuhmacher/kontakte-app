@@ -37,7 +37,9 @@
       <p>{{ selectedContact.givenName }} {{ selectedContact.familyName }}</p>
       <p v-if="selectedContact.phoneNumbers?.length">
         <ion-icon name="call-outline"></ion-icon>
+        <span style="cursor:pointer; color:var(--ion-color-primary)" @click="copyToClipboard(selectedContact.phoneNumbers[0].value)">
         {{ selectedContact.phoneNumbers[0].value }}
+        </span>
       </p>
       <p v-if="selectedContact.emailAddresses?.length">
         <ion-icon name="at-outline"></ion-icon>
@@ -51,6 +53,9 @@
         <ion-button @click="confirmAndDeleteContact()">
           <ion-icon name="trash-outline"></ion-icon>
         </ion-button>
+        <ion-button @click="updateContact()">
+          <ion-icon name="create-outline"></ion-icon>
+        </ion-button>
   </ion-content>
 </ion-modal>
     </ion-content>
@@ -63,7 +68,7 @@ import { IonList, IonItem, IonLabel, IonButton, IonContent, IonHeader, IonPage, 
 import { Contacts } from '@capawesome-team/capacitor-contacts';
 import { ref, onMounted } from 'vue';
 import { addIcons } from 'ionicons';
-import { addOutline, atOutline, balloonOutline, callOutline, reloadOutline, trashOutline } from 'ionicons/icons';
+import { addOutline, atOutline, balloonOutline, callOutline, createOutline, reloadOutline, trashOutline } from 'ionicons/icons';
 import { IonModal, IonButtons } from '@ionic/vue';  
 
 addIcons({
@@ -72,7 +77,8 @@ addIcons({
   'call-outline': callOutline,
   'at-outline': atOutline, 
   'balloon-outline': balloonOutline,
-  'trash-outline': trashOutline
+  'trash-outline': trashOutline,
+  'create-outline': createOutline,
 });
 
 onMounted(() => {
@@ -129,10 +135,24 @@ const deleteContactById = async (contactId: string) => {
   await countContacts();
 }
 
+const copyToClipboard = async (number: string) => {
+  await Clipboard.write(number);
+};
+
+const checkClipboard = async () => {
+  const { type, value } = await Clipboard.read();
+
+  console.log(`Got ${type} from clipboard: ${value}`);
+};
+
+const updateContact = async () => {
+  
+};
+
 const createContact = async () => {}
 
 const requestPermissions = async () => {
-  const status = await Contacts.requestPermissions();
+  const status = await Contacts.requestPermissions() as { granted: boolean };
   if (status.granted) {
     await getContacts();
     await countContacts();
