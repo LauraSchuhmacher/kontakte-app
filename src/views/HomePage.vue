@@ -15,10 +15,13 @@
       </ion-header>
       <ion-button @click="getContacts()" fill="outline" aria-label="Reload">
         <ion-icon name="reload-outline" aria-hidden="true"></ion-icon>Kontakte laden</ion-button> 
-      <!-- page 145 -->
-      <ion-button @click="createContact()" fill="clear" aria-label="Add"> 
-        <ion-icon name="add-outline" aria-hidden="true"></ion-icon> Erstelle Kontakt </ion-button>
-        <ion-list>
+      <!-- page 145 -->        
+        <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+  <ion-fab-button @click="createContact()" aria-label="Add">
+    <ion-icon name="add-outline"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
+<ion-list>
           <ion-item v-for="contact in contacts" :key="contact.givenName" @click="openDetail(contact)">
             <ion-label>
               {{ contact.givenName }} {{ contact.familyName }}<br />
