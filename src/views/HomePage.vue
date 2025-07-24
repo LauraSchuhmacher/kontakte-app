@@ -64,19 +64,25 @@
               <ion-icon name="call-outline"></ion-icon>
               <span
                 style="cursor: pointer; color: var(--ion-color-primary)"
-                @click="copyToClipboard(selectedContact.phoneNumbers[0].value)"
+                @click="callNumber(selectedContact.phoneNumbers[0].value)"
               >
                 {{ selectedContact.phoneNumbers[0].value }}
               </span>
+                <ion-button fill="clear" color="medium" @click="copyToClipboard(selectedContact.phoneNumbers[0].value)">
+                  <ion-icon name="copy-outline"></ion-icon>
+                </ion-button>
             </p>
             <p v-if="selectedContact.emailAddresses?.length">
               <ion-icon name="at-outline"></ion-icon>
               <span
                 style="cursor: pointer; color: var(--ion-color-primary)"
-                @click="copyToClipboard(selectedContact.emailAddresses[0].value)"
+                @click="writeMail(selectedContact.emailAddresses[0].value)"
               >
               {{ selectedContact.emailAddresses[0].value }}
               </span>
+              <ion-button fill="clear" color="medium" @click="copyToClipboard(selectedContact.emailAddresses[0].value)">
+                  <ion-icon name="copy-outline"></ion-icon>
+                </ion-button>
             </p>
             <p v-if="selectedContact.birthday">
               <ion-icon name="balloon-outline"></ion-icon>
@@ -125,6 +131,8 @@ import {
   createOutline,
   reloadOutline,
   trashOutline,
+  copyOutline,
+
 } from "ionicons/icons";
 
 addIcons({
@@ -136,6 +144,7 @@ addIcons({
   "trash-outline": trashOutline,
   "create-outline": createOutline,
   "arrow-back-outline": arrowBackOutline,
+  "copy-outline": copyOutline,
 });
 
 onMounted(() => {
@@ -233,6 +242,14 @@ const copyToClipboard = async (text: string) => {
   await Clipboard.write({ string: text });
   alert("In die Zwischenablage kopiert: " + text);
 };
+
+const callNumber = (number: string) => {
+  window.location.href = `tel:${number}`;
+}
+
+const writeMail = (email: string) => {
+  window.location.href = `mailto:${email}`;
+}
 
 const updateContact = async () => {};
 
