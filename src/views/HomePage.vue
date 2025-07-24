@@ -71,7 +71,12 @@
             </p>
             <p v-if="selectedContact.emailAddresses?.length">
               <ion-icon name="at-outline"></ion-icon>
+              <span
+                style="cursor: pointer; color: var(--ion-color-primary)"
+                @click="copyToClipboard(selectedContact.emailAddresses[0].value)"
+              >
               {{ selectedContact.emailAddresses[0].value }}
+              </span>
             </p>
             <p v-if="selectedContact.birthday">
               <ion-icon name="balloon-outline"></ion-icon>
@@ -93,7 +98,6 @@
 </template>
 
 <script setup lang="ts">
-import { Capacitor } from "@capacitor/core";
 import {
   IonModal,
   IonButtons,
@@ -225,9 +229,9 @@ const deleteContactById = async (contactId: string) => {
   await getContacts();
   await countContacts();
 };
-const copyToClipboard = async (number: string) => {
-  await Clipboard.write({ string: number });
-  alert("In die Zwischenablage kopiert: " + number);
+const copyToClipboard = async (text: string) => {
+  await Clipboard.write({ string: text });
+  alert("In die Zwischenablage kopiert: " + text);
 };
 
 const updateContact = async () => {};
