@@ -111,6 +111,7 @@ import {
 import { Contacts } from "@capawesome-team/capacitor-contacts";
 import { ref, onMounted } from "vue";
 import { addIcons } from "ionicons";
+import { Clipboard } from "@capacitor/clipboard";
 import {
   arrowBackOutline,
   addOutline,
@@ -224,15 +225,9 @@ const deleteContactById = async (contactId: string) => {
   await getContacts();
   await countContacts();
 };
-
 const copyToClipboard = async (number: string) => {
-  await Clipboard.write(number);
-};
-
-const checkClipboard = async () => {
-  const { type, value } = await Clipboard.read();
-
-  console.log(`Got ${type} from clipboard: ${value}`);
+  await Clipboard.write({ string: number });
+  alert("In die Zwischenablage kopiert: " + number);
 };
 
 const updateContact = async () => {};
