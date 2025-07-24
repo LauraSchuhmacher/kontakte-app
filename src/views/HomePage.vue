@@ -99,6 +99,40 @@
           </ion-button>
         </ion-content>
       </ion-modal>
+
+      <ion-modal :is-open="showCreateModal" @didDismiss="closeCreateModal">
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Neuen Kontakt erstellen</ion-title>
+            <ion-buttons slot="end">
+              <ion-button @click="closeCreateModal()">Abbrechen</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding">
+          <ion-item>
+            <ion-label position="stacked">Vorname</ion-label>
+            <ion-input v-model="newContact.givenName" placeholder="Max"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Nachname</ion-label>
+            <ion-input v-model="newContact.familyName" placeholder="Mustermann"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Telefonnummer</ion-label>
+            <ion-input v-model="newContact.phoneNumber" type="tel"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">E-Mail</ion-label>
+            <ion-input v-model="newContact.email" type="email"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Geburtstag</ion-label>
+            <ion-datetime v-model="newContact.birthday" presentation="date"></ion-datetime>
+          </ion-item>
+          <ion-button expand="block" @click="saveNewContact()">Speichern</ion-button>
+        </ion-content>
+      </ion-modal>
     </ion-content>
   </ion-page>
 </template>
@@ -117,6 +151,11 @@ import {
   IonTitle,
   IonToolbar,
   IonIcon,
+  IonDatetime,
+  IonInput,
+  IonItemDivider,
+  IonFab,
+  IonFabButton,
 } from "@ionic/vue";
 import { Contacts } from "@capawesome-team/capacitor-contacts";
 import { ref, onMounted } from "vue";
@@ -155,10 +194,19 @@ onMounted(() => {
 
 const contacts = ref<any[]>([]);
 const showDetail = ref(false);
+const showCreateModal = ref(false);
 const selectedContact = ref<any | null>(null);
 const groupedContacts = ref<{ [letter: string]: any[] }>({});
 const sortedLetters = ref<string[]>([]);
 const totalContacts = ref<number | null>(null);
+
+const newContact = ref({
+  givenName: "",
+  familyName: "",
+  phoneNumber: "",
+  email: "",
+  birthday: "",
+});
 
 const getContacts = async () => {
   const { contacts: result } = await Contacts.getContacts({
@@ -222,6 +270,17 @@ const closeDetail = () => {
   selectedContact.value = null;
 };
 
+const closeCreateModal = () => {
+  showCreateModal.value = false;
+  newContact.value = {
+    givenName: "",
+    familyName: "",
+    phoneNumber: "",
+    email: "",
+    birthday: "",
+    };
+  };
+
 const confirmAndDeleteContact = async () => {
   if (!selectedContact.value?.id) return;
   const confirmed = window.confirm(
@@ -231,6 +290,26 @@ const confirmAndDeleteContact = async () => {
     await deleteContactById(selectedContact.value.id);
     closeDetail();
   }
+};
+
+const saveNewContact = async () => {
+  const contact = {
+    givenName: newContact.value.givenName,
+    familyName: newContact.value.familyName,
+    phoneNumbers: newContact.value.phoneNumber ? [{ value: newContact.value.phoneNumber }] : [],
+    emailAddresses: newContact.value.email ? [{ value: newContact.value.email }] : [],
+    birthday: newContact.value.birthday
+      ? {
+          year: new Date(newContact.value.birthday).getFullYear(),
+          month: new Date(newContact.value.birthday).getMonth() + 1,
+          day: new Date(newContact.value.birthday).getDate(),
+        }
+      : undefined,
+  };
+  await Contacts.createContact({ contact });
+  closeCreateModal();
+  await getContacts();
+  await countContacts();
 };
 
 const deleteContactById = async (contactId: string) => {
@@ -253,7 +332,9 @@ const writeMail = (email: string) => {
 
 const updateContact = async () => {};
 
-const createContact = async () => {};
+const createContact = () => {
+  showCreateModal.value = true;
+};
 
 const requestPermissions = async () => {
   const status = (await Contacts.requestPermissions()) as { granted: boolean };
