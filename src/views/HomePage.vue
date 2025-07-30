@@ -2,7 +2,10 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-title>Kontakte</ion-title>
+        <ion-title style="display: flex; align-items: center;">
+          <img :src="myIcon" alt="Icon" style="height: 24px; width: 24px; margin-right: 8px; border-radius: 50%;" />
+          Kontakte
+        </ion-title>
       </ion-toolbar>
     </ion-header>
 
@@ -177,6 +180,8 @@ import {
   copyOutline,
 
 } from "ionicons/icons";
+import myIcon from '@/assets/favicon.png';
+
 
 addIcons({
   "add-outline": addOutline,
