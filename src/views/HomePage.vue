@@ -195,8 +195,8 @@ addIcons({
   "copy-outline": copyOutline,
 });
 
-onMounted(() => {
-  requestPermissions();
+onMounted(async() => {
+ await requestPermissions();
   // getContacts();
   // countContacts();
 });
@@ -346,8 +346,8 @@ const createContact = () => {
 };
 
 const requestPermissions = async () => {
-  const status = (await Contacts.requestPermissions()) as { granted: boolean };
-  if (status.granted) {
+  const status = await Contacts.requestPermissions();
+  if (status.readContacts === 'granted') {
     await getContacts();
     await countContacts();
   } else {
