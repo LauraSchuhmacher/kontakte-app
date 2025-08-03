@@ -53,7 +53,6 @@ export const getContacts = async () => {
     if (!b.givenName) return -1;
     return a.givenName.localeCompare(b.givenName);
   });
-  console.log(contacts);
 
   const groups: { [letter: string]: any[] } = {};
 
@@ -91,7 +90,6 @@ export const getContacts = async () => {
 
 export const countContacts = async () => {
   const { total } = await Contacts.countContacts();
-  console.log("Anzahl Kontakte:", total);
   totalContacts.value = total;
 };
 
@@ -178,12 +176,9 @@ export const createContact = async () => {
 
 export const requestPermissions = async () => {
   const status = await Contacts.requestPermissions();
-  console.log("Permissions read:", status.readContacts);
-  console.log("Permissions write:", status.writeContacts);
   if (status.readContacts === "granted") {
     await getContacts();
     await countContacts();
   } else {
-    console.warn("Keine Berechtigung für Kontakte");
   }
 };
