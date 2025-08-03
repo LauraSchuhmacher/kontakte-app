@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { totalContacts, createContact, getContacts, requestPermissions } from "@/logic";
-import { IonHeader, IonToolbar, IonTitle, IonButton, IonContent, IonPage, IonIcon, IonFab, IonFabButton } from "@ionic/vue";
+import { totalContacts, createContact, getContacts, requestPermissions, countContacts } from "@/logic";
+import { IonHeader, IonNote, IonToolbar, IonTitle, IonButton, IonContent, IonPage, IonIcon, IonFab, IonFabButton } from "@ionic/vue";
 import myIcon from "@/assets/favicon.png";
 import { onMounted } from "vue";
 import ContactList from "./ContactList.vue";
@@ -15,24 +15,21 @@ onMounted(async () => {
 
 <template>
   <ion-page>
+
     <ion-header>
       <ion-toolbar>
-        <ion-title style="display: flex; align-items: center;">
+        <ion-title style="display: flex; align-items: center;" >
           <img :src="myIcon" alt="Icon" style="height: 24px; width: 24px; margin-right: 8px; border-radius: 50%;" />
           Kontakte
+          <span v-if="totalContacts !== null" style="margin-left: 8px; font-weight: normal;">{{ totalContacts }} </span>
         </ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
       <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Kontakte</ion-title>
-          <p v-if="totalContacts !== null">{{ totalContacts }}</p>
-        </ion-toolbar>
       </ion-header>
       <ion-button @click="getContacts()" fill="outline" aria-label="Reload">
         <ion-icon name="reload-outline" aria-hidden="true"></ion-icon></ion-button>
-      <!-- page 145 -->
       <ContactList /> 
       <ion-fab slot="fixed" vertical="bottom" horizontal="end">
         <ion-fab-button @click="createContact()" aria-label="Add">
@@ -41,8 +38,10 @@ onMounted(async () => {
       </ion-fab>
     </ion-content>
   </ion-page>
+
   <ContactDetailModal />
   <ContactCreateModal />
+
 </template>
 
 <style scoped>
