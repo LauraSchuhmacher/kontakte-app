@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { totalContacts, createContact, getContacts, requestPermissions, countContacts } from "@/logic";
-import { IonHeader, IonNote, IonToolbar, IonTitle, IonButton, IonContent, IonPage, IonIcon, IonFab, IonFabButton } from "@ionic/vue";
+import { IonHeader, IonToolbar, IonTitle, IonButton, IonContent, IonPage, IonIcon, IonFab, IonFabButton } from "@ionic/vue";
 import myIcon from "@/assets/favicon.png";
 import { onMounted } from "vue";
 import ContactList from "./ContactList.vue";
