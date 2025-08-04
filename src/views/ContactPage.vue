@@ -26,8 +26,6 @@ onMounted(async () => {
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-      </ion-header>
       <ion-button @click="getContacts()" fill="outline" aria-label="Reload">
         <ion-icon name="reload-outline" aria-hidden="true"></ion-icon></ion-button>
       <ContactList /> 
