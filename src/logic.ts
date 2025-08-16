@@ -167,8 +167,6 @@ export const writeMail = (email: string) => {
   window.location.href = `mailto:${email}`;
 };
 
-export const updateContact = async () => {};
-
 export const createContact = async () => {
   const status = await Contacts.requestPermissions();
   if (status.writeContacts === "granted") showCreateModal.value = true;

@@ -25,6 +25,7 @@ onMounted(async () => {
         </ion-title>
       </ion-toolbar>
     </ion-header>
+
     <ion-content :fullscreen="true">
       <ion-button @click="getContacts()" fill="outline" aria-label="Reload">
         <ion-icon name="reload-outline" aria-hidden="true"></ion-icon></ion-button>
@@ -35,6 +36,7 @@ onMounted(async () => {
         </ion-fab-button>
       </ion-fab>
     </ion-content>
+    
   </ion-page>
 
   <ContactDetailModal />

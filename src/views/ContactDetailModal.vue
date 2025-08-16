@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { showDetail, closeDetail, selectedContact, callNumber, copyToClipboard, writeMail, confirmAndDeleteContact, updateContact } from "@/logic";
+import { showDetail, closeDetail, selectedContact, callNumber, copyToClipboard, writeMail, confirmAndDeleteContact } from "@/logic";
 import { IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonModal, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonContent, IonItem, IonLabel } from "@ionic/vue";
 </script>
 
@@ -60,10 +60,6 @@ import { IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonModal
         Löschen
       </ion-button>
 
-      <ion-button color="primary" @click="updateContact()">
-        <ion-icon slot="start" name="create-outline"></ion-icon>
-        Bearbeiten
-      </ion-button>
     </div>
   </ion-content>
 </ion-modal>
